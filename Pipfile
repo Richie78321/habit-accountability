@@ -8,6 +8,7 @@ todoist-python = "*"
 pyyaml = "*"
 requests = "*"
 pytz = "*"
+python-dateutil = "*"
 
 [dev-packages]
 python-dotenv = "*"
