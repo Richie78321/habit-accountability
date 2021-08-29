@@ -1,0 +1,28 @@
+name: habit-accountability
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # Midnight EST
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run habit-accountability
+      env:
+        IMPLICIT_TIMEZONE: US/Eastern # Timezone to use when task is not in explicit timezone.
+        TODOIST_APIKEY: ${{ secrets.TODOIST_APIKEY }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      run: |
+        python accountability.py
