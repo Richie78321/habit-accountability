@@ -1,6 +1,7 @@
 import os
 import yaml
 import requests
+import pytz
 from datetime import datetime, timedelta
 from dateutil.parser import isoparse
 from todoist.api import TodoistAPI
@@ -10,6 +11,7 @@ if not os.getenv('GITHUB_ACTIONS'):
   from dotenv import load_dotenv
   load_dotenv()
 
+implicit_timezone = pytz.timezone(os.getenv('IMPLICIT_TIMEZONE'))
 todoist_token = os.getenv('TODOIST_APIKEY')
 if todoist_token is None:
   raise Exception('Please set TODOIST_APIKEY as an environment variable.')
@@ -40,15 +42,22 @@ class Habit(object):
 
   def due_date(self):
     date_iso_string = self.todoist_item['due'].get('date')
+    parsed_date = isoparse(date_iso_string)
+
+    due_date_timezone = self.todoist_item['due'].get('timezone')
+    if due_date_timezone is None:
+      # No timezone, need to use implicit timezone (otherwise it would always be implicitly UTC)
+      parsed_date = implicit_timezone.localize(parsed_date)
+
     if 'T' in date_iso_string:
       # There is a time component of the due date. Interpret literally.
-      return isoparse(date_iso_string)
+      return parsed_date
     else:
       # There is no time component of this due date. Interpret as beginning of next day.
-      return isoparse(date_iso_string) + timedelta(days=1)
+      return parsed_date + timedelta(days=1)
 
   def is_overdue(self):
-    return self.due_date() <= datetime.now()
+    return self.due_date() <= pytz.utc.localize(datetime.utcnow())
 
   def broadcast_failure_message(self):
     if self.habit['task_failure_message'] is None:
