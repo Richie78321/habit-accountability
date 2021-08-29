@@ -3,6 +3,7 @@ name: habit-accountability
 on:
   schedule:
     - cron: '0 4 * * *' # Midnight EST
+  workflow_dispatch:
 
 jobs:
   build:
