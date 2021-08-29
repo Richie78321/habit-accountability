@@ -1,5 +1,0 @@
-habits:
-  - task_id: 1234
-    task_failure_message: Message 1
-  - task_id: 5678
-    task_failure_message: Message 2
