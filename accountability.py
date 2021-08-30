@@ -78,7 +78,7 @@ def broadcast_overdue_habits(habit_configs):
       if habit.is_overdue():
         habit.broadcast_failure_message()
     else:
-      print("Task with ID {} is not a valid task. Continuing...".format(task_id))
+      print("Task with ID {} is not a valid task. Continuing...".format(habit_config['task_id']))
 
 def main():
   with open("habits.yaml", 'r') as stream:
