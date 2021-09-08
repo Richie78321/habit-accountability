@@ -64,7 +64,7 @@ class Habit(object):
       return
 
     requests.post(discord_webhook, json={
-      'content': '**Habit Accountability**: {}'.format(self.habit['task_failure_message'])
+      'content': self.habit['task_failure_message']
     })
     print("Broadcasted failure message for uncompleted task with ID {}.".format(self.habit['task_id']))
 
